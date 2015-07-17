@@ -1,0 +1,199 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../neon-animation/neon-animation.html">
+<link rel="import" href="../neon-animation/neon-animations.html">
+<link rel="import" href="../iron-media-query/iron-media-query.html">
+<link rel="import" href="../wid-ripple-transition-behavior/wid-ripple-transition-behavior.html">
+
+
+<!--
+This element wraps some content. If the parents (eg. `neon-animated-pages`)
+changes of page. Than a ripple animation is triggered to display this element.
+On close a reverse-ripple-animation is played to display the previous element.
+
+Example:
+
+    <wid-aligned-card>
+
+      <div id="card-content" class="fit layout vertical center">
+        <h2>Hello World</h2>
+        <p>
+          Lorem ipsum ...
+        </p>
+      </div>
+
+    </wid-aligned-card>
+
+@group Wid
+@element wid-aligned-card
+@demo demo/index.html
+-->
+<dom-module id="wid-aligned-card">
+  <style>
+
+    :host {
+      display: block;
+      overflow: hidden;
+      color: white;
+    }
+
+    #placeholder {
+      opacity: 0;
+      background-color: var(--interest-card-background-color);
+    }
+
+    #arrow-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: var(--wid-card-dialog-arrow-back-margin, 20px);
+      cursor: pointer;
+    }
+
+    #content {
+      background-color: var(--interest-card-background-color);
+      width: 100%;
+      height: 100%;
+    }
+
+    #content ::content iron-image{
+      width: 100%;
+      height: 100%;
+      @apply(--layout-flex-auto);
+    }
+
+    #picture-container {
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+    }
+
+    #text-container {
+      text-align: center;
+      padding: 20px;
+    }
+
+  </style>
+  <template>
+
+    <iron-media-query query="(max-width: 639px)" query-matches="{{_isMobile}}"></iron-media-query>
+    <div id="placeholder" class="fit"></div>
+    <div id="content" class$="[[_computeClasses(layout, _isMobile)]]">
+
+      <div id="picture-container" class$="[[_computePictureClasses(_isMobile)]]" style$="[[_computePictureStyle(layout)]]">
+        <content select="iron-image[picture]"></content>
+      </div>
+      <div id="text-container" class$="[[_computeTextClasses(_isMobile)]]" style$="[[_computeTextStyle(layout)]]">
+        <content></content>
+      </div>
+
+      <iron-icon id="arrow-back" icon="arrow-back" on-tap="_onArrowTap"></iron-icon>
+    </div>
+
+  </template>
+</dom-module>
+
+<script>
+(function() {
+  Polymer({
+    is: 'wid-aligned-card',
+
+    behaviors: [
+      Polymer.WidRippleTransitionBehavior
+    ],
+
+    properties: {
+      layout: {
+        type: String,
+        value: 'left'
+      },
+
+
+      /**
+       * Shared elements configuration. Cf. `neon-animation`
+       * @type {Object}
+       */
+      sharedElements: {
+        value: function() {
+          return {
+            'ripple': this.$.placeholder,
+            'reverse-ripple': this.$.placeholder
+          };
+        }
+      }
+    },
+
+    _computeClasses: function () {
+      var classes = 'flex layout ';
+
+      if (this._isMobile) {
+
+        classes += 'vertical center-center';
+
+      } else {
+
+        switch (this.layout) {
+          case 'left':
+            classes += 'horizontal around-justified';
+            break;
+
+          case 'center':
+            classes += 'vertical center-center';
+            break;
+
+          case 'right':
+            classes += 'horizontal around-justified';
+            break;
+        }
+
+      }
+
+      return classes;
+    },
+
+    _computePictureClasses: function () {
+      var flex = (this._isMobile) ? '1' : '2';
+
+      return 'flex-' + flex + ' layout vertical center-center';
+    },
+
+    _computeTextClasses: function () {
+      return 'flex-1 layout vertical center-center';
+    },
+
+    _computePictureStyle: function() {
+      var order = 1;
+
+      if (this.layout === 'right') {
+        order = 2;
+      }
+
+      return 'order: ' + order + ';';
+    },
+
+    _computeTextStyle: function() {
+      var order = 2;
+
+      if (this.layout === 'right') {
+        order = 1;
+      }
+
+      return 'order: ' + order + ';';
+    },
+
+    /**
+     * The `ripple-content-closing` event is fired whenever the user clicks on this component.
+     *
+     * @event ripple-content-closing
+     */
+
+    /**
+     * We fire an event when this component is tapped.
+     */
+    _onArrowTap: function () {
+      this.fire('aligned-card-closing');
+    }
+  });
+})();
+</script>
