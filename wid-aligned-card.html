@@ -104,6 +104,16 @@ Example:
     ],
 
     properties: {
+      color: {
+        type: String,
+        observer: '_colorChanged'
+      },
+
+      textColor: {
+        type: String,
+        value: 'white'
+      },
+
       layout: {
         type: String,
         value: 'left'
@@ -121,6 +131,13 @@ Example:
             'reverse-ripple': this.$.placeholder
           };
         }
+      }
+    },
+
+    _colorChanged: function () {
+      if (this.color) {
+        this.$.placeholder.style.backgroundColor = this.color;
+        this.$.content.style.backgroundColor = this.color;
       }
     },
 
@@ -173,13 +190,14 @@ Example:
     },
 
     _computeTextStyle: function() {
-      var order = 2;
+      var order = 2,
+          color = 'color: ' + this.textColor + ';';
 
       if (this.layout === 'right') {
         order = 1;
       }
 
-      return 'order: ' + order + ';';
+      return 'order: ' + order + ';' + color;
     },
 
     /**
