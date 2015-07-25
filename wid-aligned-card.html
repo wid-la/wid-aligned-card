@@ -66,7 +66,7 @@ Example:
     #picture-container {
       width: 100%;
       height: 100%;
-      padding: 10px;
+      /*padding: 10px;*/
     }
 
     #text-container {
@@ -81,11 +81,11 @@ Example:
     <div id="placeholder" class="fit"></div>
     <div id="content" class$="[[_computeClasses(layout, _isMobile)]]">
 
-      <div id="picture-container" class$="[[_computePictureClasses(_isMobile)]]" style$="[[_computePictureStyle(layout)]]">
-        <content select="iron-image[picture]"></content>
+      <div id="text-container" class$="[[_computeTextClasses(_isMobile)]]" style$="[[_computeTextStyle(layout, _isMobile)]]">
+        <content select=":not([picture])"></content>
       </div>
-      <div id="text-container" class$="[[_computeTextClasses(_isMobile)]]" style$="[[_computeTextStyle(layout)]]">
-        <content></content>
+      <div id="picture-container" class$="[[_computePictureClasses(_isMobile)]]" style$="[[_computePictureStyle(layout, _isMobile)]]">
+        <content select="iron-image[picture]"></content>
       </div>
 
       <iron-icon id="arrow-back" icon="arrow-back" on-tap="_onArrowTap"></iron-icon>
@@ -146,7 +146,7 @@ Example:
 
       if (this._isMobile) {
 
-        classes += 'vertical center-center';
+        return 'fit scroll';
 
       } else {
 
@@ -170,13 +170,13 @@ Example:
     },
 
     _computePictureClasses: function () {
-      var flex = (this._isMobile) ? '1' : '2';
-
-      return 'flex-' + flex + ' layout vertical center-center';
+      var flex = (this._isMobile) ? '' : 'flex-2 center-center';
+      return flex + ' layout vertical center-center';
     },
 
     _computeTextClasses: function () {
-      return 'flex-1 layout vertical center-center';
+      var flex = (this._isMobile) ? '' : 'flex-1';
+      return flex + ' layout vertical center-center';
     },
 
     _computePictureStyle: function() {
