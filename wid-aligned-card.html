@@ -77,10 +77,11 @@ Example:
   <template>
 
     <iron-media-query query="(max-width: 639px)" query-matches="{{_isMobile}}"></iron-media-query>
+    <iron-media-query query="(max-width: 801px)" query-matches="{{_isTouch}}"></iron-media-query>
     <div id="placeholder" class="fit"></div>
     <div id="content" class$="[[_computeClasses(layout, _isMobile)]]">
 
-      <div class="flex-1" style="order: 0;" hidden$="[[_isMobile]]"></div>
+      <div class="flex-1" style="order: 0;" hidden$="[[_isTouch]]"></div>
 
       <div id="text-container" class$="[[_computeTextClasses(_isMobile)]]" style$="[[_computeTextStyle(layout, _isMobile)]]">
         <content select=":not([picture])"></content>
@@ -89,7 +90,7 @@ Example:
         <content select="iron-image[picture]"></content>
       </div>
 
-      <div class="flex-1" style="order: 10;" hidden$="[[_isMobile]]"></div>
+      <div class="flex-1" style="order: 10;" hidden$="[[_isTouch]]"></div>
 
       <iron-icon id="arrow-back" icon="arrow-back" on-tap="_onArrowTap"></iron-icon>
     </div>
